@@ -4,11 +4,13 @@ import userRouter from './routes/usersRoutes.js';
 import mongoose from 'mongoose';
 import galleryItemRoute from './routes/GalleryItemRoute.js';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
 
-const connectionString = 'mongodb+srv://Ashen:123@cluster0.4q07s2y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const connectionString = process.env.MONGO_URL;
 // Here you would typically connect to the database using the connection string
 // e.g., mongoose.connect(connectionString);
 
@@ -16,7 +18,7 @@ app.use((req, res, next) => {
 
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (token != null) {
-  jwt.verify(token, 'yourSecretKey', (err, decoded) => {
+  jwt.verify(token, 'process.env.Jwt_Key', (err, decoded) => {
     if (decoded != null) {
       req.body.user = decoded;
       next();

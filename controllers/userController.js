@@ -1,6 +1,8 @@
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export function getUser(req, res) {
     User.find().then(
@@ -58,7 +60,7 @@ export function loginUser(req, res) {
                             FirstName: user.FirstName,
                             LastName: user.LastName
                         },
-                        'yourSecretKey',
+                        'process.env.Jwt_Key',
                         { expiresIn: '48h' }
                     );
                     res.json({
