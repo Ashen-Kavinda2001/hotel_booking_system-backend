@@ -3,22 +3,26 @@ import bodyParser from 'body-parser';
 import userRouter from './routes/usersRoutes.js';
 import mongoose from 'mongoose';
 import galleryItemRoute from './routes/GalleryItemRoute.js';
+import categeoryRouter from './routes/categeoryRouts.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config(); 
 
 const app = express();
 app.use(bodyParser.json());
 
-const connectionString = process.env.MONGO_URL;
-// Here you would typically connect to the database using the connection string
-// e.g., mongoose.connect(connectionString);
+const connectionString = process.env.Mongo_Url;
+mongoose.connect(connectionString).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.log('Connection failed:', error);
+});
 
 app.use((req, res, next) => {
 
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (token != null) {
-  jwt.verify(token, 'process.env.Jwt_Key', (err, decoded) => {
+  jwt.verify(token, process.env.Jwt_Key, (err, decoded) => {
     if (decoded != null) {
       req.body.user = decoded;
       next();
@@ -32,16 +36,13 @@ app.use((req, res, next) => {
  }
 });
 
-
-  mongoose.connect(connectionString).then(() => {
-    console.log('Connected to MongoDB');
-  }).catch(() => {
-    console.log('Connection failed');
-  })
 app.use('/api/users', userRouter);
 app.use('/api/gallery', galleryItemRoute);  
+app.use('/api/categories', categeoryRouter);
 
-app.listen(3000, (req,res) => {
-  console.log('Server is running on port 3000');
+
+
+app.listen(3001, (req,res) => {
+  console.log('Server is running on port 3001');
 });
 

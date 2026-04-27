@@ -19,13 +19,14 @@ export function postGalleryItem(req, res) {
         });
 
     }
-    if(user.type !== 'admin') {
+    if (user.type !== 'Admin') {
+        console.log(user.type);
         return res.status(403).json({ 
-            message: 'only admin can create gallery item' 
+            message: 'only admin can create gallery item'
         });
     }
 
-    const galleryItem = req.body.item;
+    const galleryItem = req.body;
     const newGalleryItem = new GalleryItem(galleryItem);
 
     newGalleryItem.save().then(() => {

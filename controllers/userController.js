@@ -19,7 +19,7 @@ export function postUser(req, res) {
 
     const password = req.body.Password;
     const hashedPassword = bcrypt.hashSync(password,10);
-    user.Password = hashedPassword;
+    user.password = hashedPassword;
 
     const newUser = new User(user);
 
@@ -47,7 +47,7 @@ export function loginUser(req, res) {
                 });
             } else {
                 // Compare entered password with hashed password
-                const isMatch = bcrypt.compareSync(credentials.Password, user.Password);
+                const isMatch = bcrypt.compareSync(credentials.password, user.password);
                 if (!isMatch) {
                     res.json({
                         message: 'Invalid email or password'
@@ -58,7 +58,8 @@ export function loginUser(req, res) {
                             email: user.email,
                             id: user._id,
                             FirstName: user.FirstName,
-                            LastName: user.LastName
+                            LastName: user.LastName,
+                            type: user.type
                         },
                         'process.env.Jwt_Key',
                         { expiresIn: '48h' }

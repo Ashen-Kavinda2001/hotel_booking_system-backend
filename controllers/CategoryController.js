@@ -1,0 +1,40 @@
+import Category from "../models/category.js";
+
+
+export function getCategories(req, res) {
+    Category.find().then((categories) => {
+        res.json({
+            categories: categories
+        });
+    })
+}
+
+export  function createCategory(req, res) {
+    const user = req.body.user;
+    if (user == null) {
+        return res.status(403).json({ 
+            message: 'please login to create category' 
+        })
+        return
+    }
+    console.log(user.type);
+    if(user.type !== 'Admin') {
+        return res.status(403).json({ 
+            message: 'only admin can create category' 
+        })
+        return
+    }
+    const categoryData = req.body;
+    const newCategory = new Category(categoryData);
+    newCategory.save().then((result) => {
+        res.json({
+            message: 'Category created successfully',
+            result: result
+        }); 
+    }).catch((err) => {
+        res.status(500).json({
+            message: 'Error creating category',
+            error: err
+        });
+    });
+}
