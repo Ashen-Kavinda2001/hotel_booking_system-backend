@@ -9,4 +9,5 @@ userRouter.post('/',postUser)
 
 userRouter.post('/login',loginUser)
 
+
 export default userRouter;

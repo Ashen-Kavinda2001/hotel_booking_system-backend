@@ -1,8 +1,6 @@
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
-dotenv.config();
 
 export function getUser(req, res) {
     User.find().then(
@@ -15,11 +13,15 @@ export function getUser(req, res) {
 }
 export function postUser(req, res) {
 
-    const user = req.body;
+    const hashedPassword = bcrypt.hashSync(req.body.Password, 10);
+    const user = {
+        Firstname: req.body.Firstname,
+        Lastname: req.body.Lastname,
+        email: req.body.email,
+        Password: hashedPassword,
+        type: req.body.type
+    };
 
-    const password = req.body.Password;
-    const hashedPassword = bcrypt.hashSync(password,10);
-    user.password = hashedPassword;
 
     const newUser = new User(user);
 
@@ -47,7 +49,7 @@ export function loginUser(req, res) {
                 });
             } else {
                 // Compare entered password with hashed password
-                const isMatch = bcrypt.compareSync(credentials.password, user.password);
+                const isMatch = bcrypt.compareSync(credentials.Password, user.Password);
                 if (!isMatch) {
                     res.json({
                         message: 'Invalid email or password'
@@ -57,11 +59,11 @@ export function loginUser(req, res) {
                         {
                             email: user.email,
                             id: user._id,
-                            FirstName: user.FirstName,
-                            LastName: user.LastName,
+                            Firstname: user.Firstname,
+                            Lastname: user.Lastname,
                             type: user.type
                         },
-                        'process.env.Jwt_Key',
+                        process.env.Jwt_Key,
                         { expiresIn: '48h' }
                     );
                     res.json({
@@ -69,6 +71,7 @@ export function loginUser(req, res) {
                         user: user,
                         token: token
                     });
+                    
                 }
             }
         }
