@@ -25,11 +25,9 @@ const userSchema = mongoose.Schema({
     },
     Whatsapp:{
         type: String,
-        required: true,
     },
     Phone:{
         type: String,
-        required: true,
     },
     dissabled:{
         type: Boolean,
